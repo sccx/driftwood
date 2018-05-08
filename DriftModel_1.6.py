@@ -89,15 +89,15 @@ def point_cloud_generator(number_of_runs):
     random_ws1 = np.random.choice(weighted_ws1, total_steps)
     final_ws1 = (random_ws1 + 0.) / 100 # Speeds now in meters/sec
 
-    plot_df1 = pd.DataFrame({'speed': final_ws1, 'direction': random_wd1})
-    plot_windrose(plot_df1, kind='box', bins=np.arange(0.01,20,1), cmap=cm.GnBu_r, lw=5) # can use kind='pdf' for probability density function
+    #plot_df1 = pd.DataFrame({'speed': final_ws1, 'direction': random_wd1})
+    #plot_windrose(plot_df1, kind='box', bins=np.arange(0.01,20,1), cmap=cm.GnBu_r, lw=5) # can use kind='pdf' for probability density function
 
     random_wd2 = np.random.choice(weighted_wd2, total_steps)
     random_ws2 = np.random.choice(weighted_ws2, total_steps)
     final_ws2 = (random_ws2 + 0.) / 100 # Speeds now in meters/sec
 
-    plot_df2 = pd.DataFrame({'speed': final_ws2, 'direction': random_wd2})
-    plot_windrose(plot_df2, kind='box', bins=np.arange(0.01,20,1), cmap=cm.GnBu_r, lw=5) # can use kind='pdf' for probability density function
+    #plot_df2 = pd.DataFrame({'speed': final_ws2, 'direction': random_wd2})
+    #plot_windrose(plot_df2, kind='box', bins=np.arange(0.01,20,1), cmap=cm.GnBu_r, lw=5) # can use kind='pdf' for probability density function
 
     # Ocean current data
     random_cd = np.random.choice(weighted_cd, total_steps)
@@ -108,6 +108,21 @@ def point_cloud_generator(number_of_runs):
     my_data = np.stack((random_wd1, final_ws1, random_wd2, final_ws2, random_cd, final_cs), axis=1)
     #print("Random selection of 10 weighted variables for wind and current direction and speed, in array (my_data): ")
     #pprint.pprint(my_data)
+
+    # Gathering data about the variables
+    # Need to learn how to plot the axis of a numpy array. 
+    # For now, throw it into a list and plot that:
+    #plt.hist(my_data[0])
+    print "random_wd1, final_ws1, random_wd2, final_ws2, random_cd, final_cs"
+    print np.mean(my_data, axis=0)
+
+    i = 0
+    wind_list = []
+    while i < 432:
+        wind_list.append(my_data[i][0])
+        i = i + 1
+    
+
 
     # Backup data
     data_copy = my_data.copy()
@@ -177,7 +192,7 @@ def point_cloud_generator(number_of_runs):
     # Export results, then plot...
     # plt.scatter(newlat, newlon)
     return course
-
+#%%
 # 10  
 number_of_runs = 5
 data_list = []
