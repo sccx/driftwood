@@ -1,0 +1,99 @@
+import numpy as np
+import pandas as pd
+#import pprint
+from matplotlib import pyplot as plt
+
+#%%
+
+# Generate Wind and current vectors (directions and speeds), according to weighted probabilities
+# Meteorological convention for wind, oceanographic convention for current
+
+n1 = range(338, 361, 1)
+n2 = range(1, 23, 1)
+ne = range(23, 68, 1)
+e = range(68, 113, 1)
+se = range(113, 158, 1)
+s = range(158, 203, 1)
+sw = range(203, 248, 1)
+w = range(248, 293, 1)
+nw = range(293, 338, 1)  
+
+# Find the probabilities with non_random.py
+
+n1_prob1 = 2
+n2_prob1 = 2
+ne_prob1 = 2
+e_prob1 = 4
+se_prob1 = 80
+s_prob1 = 4
+sw_prob1 = 2
+w_prob1 = 2
+nw_prob1 = 2
+
+n1_prob2 = 2
+n2_prob2 = 2
+ne_prob2 = 2
+e_prob2 = 40
+se_prob2 = 40
+s_prob2 = 4
+sw_prob2 = 2
+w_prob2 = 2
+nw_prob2 = 2
+
+# 4
+
+# Each range of integers appears in the list a weighted number of times.
+
+weighted_wd1 = (n1 * n1_prob1) + (n2 * n2_prob1) + (ne * ne_prob1) + (e * e_prob1) + (se * se_prob1) + (s * s_prob1) + (sw * sw_prob1) + (w * w_prob1) + (nw * nw_prob1)
+weighted_wd2 = (n1 * n1_prob2) + (n2 * n2_prob2) + (ne * ne_prob2) + (e * e_prob2) + (se * se_prob2) + (s * s_prob2) + (sw * sw_prob2) + (w * w_prob2) + (nw * nw_prob2)
+#weighted_wd = range(1, 82, 1) * 50 + range(82, 119, 1) * 25 + range(119, 193, 1) * 15 + range(193, 361, 1) * 10 # Meteorological convention
+weighted_ws1 = range(0, 801, 1) * 65 + range(801, 1501, 1) * 20 + range(1501, 2001, 1) * 12 + range(2001, 10000, 1) * 3  # cm/second
+weighted_ws2 = range(0, 801, 1) * 65 + range(801, 1501, 1) * 20 + range(1501, 2001, 1) * 12 + range(2001, 10000, 1) * 3  # cm/second
+
+weighted_cd = range(0, 46, 1) * 35 + range(46, 91, 1) * 35 + range(340, 360, 1) * 30 # Oceanographic convention
+weighted_cs = range(60, 101, 1) # cm/second
+
+# 5
+# Randomly select from weighted variables according to number of total_steps
+total_steps = 432  # Each step is 10 minutes (600 seconds)
+
+# Wind data (two wind vectors, one each from the SMKF1 and MLRF1 buoys)
+random_wd1 = np.random.choice(weighted_wd1, total_steps)
+random_ws1 = np.random.choice(weighted_ws1, total_steps)
+final_ws1 = (random_ws1 + 0.) / 100 # Speeds now in meters/sec
+
+#plot_df1 = pd.DataFrame({'speed': final_ws1, 'direction': random_wd1})
+#plot_windrose(plot_df1, kind='box', bins=np.arange(0.01,20,1), cmap=cm.GnBu_r, lw=5) # can use kind='pdf' for probability density function
+
+random_wd2 = np.random.choice(weighted_wd2, total_steps)
+random_ws2 = np.random.choice(weighted_ws2, total_steps)
+final_ws2 = (random_ws2 + 0.) / 100 # Speeds now in meters/sec
+
+#plot_df2 = pd.DataFrame({'speed': final_ws2, 'direction': random_wd2})
+#plot_windrose(plot_df2, kind='box', bins=np.arange(0.01,20,1), cmap=cm.GnBu_r, lw=5) # can use kind='pdf' for probability density function
+
+# Ocean current data
+random_cd = np.random.choice(weighted_cd, total_steps)
+random_cs = np.random.choice(weighted_cs, total_steps)
+final_cs = (random_cs + 0.) / 100 # Speeds now in meters/sec
+
+# Build data array of all directions and speeds
+my_data = np.stack((random_wd1, final_ws1, random_wd2, final_ws2, random_cd, final_cs), axis=1)
+#print("Random selection of 10 weighted variables for wind and current direction and speed, in array (my_data): ")
+#pprint.pprint(my_data)
+
+# Gathering data about the variables
+# Need to learn how to plot the axis of a numpy array. 
+# For now, throw it into a list and plot that:
+#plt.hist(my_data[0])
+print "random_wd1, final_ws1, random_wd2, final_ws2, random_cd, final_cs"
+print np.mean(my_data, axis=0)
+
+i = 0
+wind_list = []
+while i < 432:
+wind_list.append(my_data[i][0])
+i = i + 1
+
+plt.plot(wind_list)
+
